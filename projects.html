@@ -462,15 +462,32 @@
     }
 
     async function getRobloxThumbnailUrl(placeId) {
-      const uniData = await fetchJSON(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`);
-      const universeId = uniData.universeId;
-      if (!universeId) throw new Error('no universeId');
+    try {
+        const uniData = await fetchJSON(
+            `https://apis.roblox.com/universes/v1/places/${placeId}/universe`
+        );
 
-      const thumbData = await fetchJSON(`https://thumbnails.roblox.com/v1/games/multiget-thumbnails?universeIds=${universeId}&size=420x420&format=Png&isCircular=false`);
-      const entry = thumbData && thumbData.data && thumbData.data[0];
-      if (!entry || !entry.imageUrl) throw new Error('no thumbnail');
-      return entry.imageUrl;
+        if (!uniData.universeId)
+            throw new Error("Universe not found.");
+
+        const thumbData = await fetchJSON(
+            `https://thumbnails.roblox.com/v1/games/multiget-thumbnails?universeIds=${uniData.universeId}&size=420x420&format=Png&isCircular=false`
+        );
+
+        const entry = thumbData.data?.[0];
+
+        if (!entry)
+            throw new Error("No thumbnail returned.");
+
+        if (entry.state !== "Completed")
+            throw new Error(`Thumbnail state: ${entry.state}`);
+
+        return entry.imageUrl;
+    } catch (err) {
+        console.error(err);
+        throw err;
     }
+}
 
     function loadRobloxThumbnails() {
       document.querySelectorAll('.thumb-wrap[data-place-id]').forEach(async wrap => {
