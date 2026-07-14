@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects - 4slgy</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      position: relative;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a0000, #4d0000, #7a0019, #b30021, #3a0000);
+      background-size: 1000% 1000%;
+      animation: waveGradient 30s ease infinite;
+      color: white;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    @keyframes waveGradient {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
+    }
+
+    .back-home-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      background-color: #b3001f;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .back-home-button:hover {
+      background-color: #ff4d5e;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    p.description {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #ffd8dd;
+    }
+
+    .filters {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filters button {
+      padding: 8px 18px;
+      border: 2px solid transparent;
+      border-radius: 20px;
+      background-color: rgba(179, 0, 31, 0.5);
+      color: white;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .filters button:hover {
+      background-color: rgba(255, 77, 94, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .filters button.active {
+      background-color: #ff4d5e;
+      border-color: #ffffff;
+    }
+
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 36px 0 18px 0;
+    }
+
+    .section-divider span {
+      white-space: nowrap;
+      font-size: 20px;
+      font-weight: 700;
+      color: #ff8c96;
+      letter-spacing: 0.5px;
+    }
+
+    .section-divider::after {
+      content: "";
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 77, 94, 0.8), rgba(255, 77, 94, 0));
+    }
+
+    .projects {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .empty-note {
+      color: #ffb3ba;
+      font-style: italic;
+      padding: 10px 0 0 0;
+    }
+
+    .project-card {
+      background-color: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 77, 94, 0.25);
+      border-radius: 12px;
+      padding: 16px;
+      width: 300px;
+      text-align: center;
+      position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 77, 94, 0.7);
+    }
+
+    .thumb-link {
+      display: block;
+      text-decoration: none;
+    }
+
+    .thumb-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 8px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #3a0000, #7a0019);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-wrap.loading {
+      background: linear-gradient(90deg, #3a0000 25%, #5a0010 50%, #3a0000 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .thumb-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #ffd8dd;
+      font-size: 13px;
+      padding: 10px;
+    }
+
+    .thumb-fallback .icon {
+      font-size: 30px;
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0);
+      transition: background 0.2s ease;
+    }
+
+    .thumb-link:hover .play-overlay {
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    .play-overlay .play-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: rgba(255, 0, 30, 0.85);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .platform-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0,0,0,0.65);
+      padding: 3px 9px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .status-badge {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .status-badge.active {
+      background: rgba(46, 204, 113, 0.25);
+      color: #6dffa0;
+      border: 1px solid rgba(109, 255, 160, 0.5);
+    }
+
+    .status-badge.discontinued {
+      background: rgba(150, 150, 150, 0.25);
+      color: #d8d8d8;
+      border: 1px solid rgba(216, 216, 216, 0.4);
+    }
+
+    .project-card h3 {
+      margin-top: 10px;
+    }
+
+    .project-card p.role {
+      font-size: 14px;
+      margin-top: 4px;
+      color: #ffd8dd;
+    }
+
+    .about-section {
+      margin-top: 60px;
+      padding: 30px;
+      background-color: rgba(0, 0, 0, 0.35);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 77, 94, 0.25);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html"><button class="back-home-button">Home</button></a>
+  <h1>My Projects</h1>
+  <p class="description">My projects developed so far, click thumbnails to open them!</p>
+
+  <div class="filters">
+    <button data-filter="all" class="active">All</button>
+    <button data-filter="active">Active</button>
+    <button data-filter="discontinued">Discontinued</button>
+  </div>
+
+  <div class="section-divider"><span>YouTube Showcases</span></div>
+  <div class="projects" id="youtube-grid"></div>
+
+  <div class="section-divider"><span>Roblox Games</span></div>
+  <div class="projects" id="roblox-grid"></div>
+
+  <div class="about-section">
+    <h2>About Me</h2>
+    <p>
+      Hi! I'm 4slgy. A Roblox developer passionate about immersive, engaging experiences.
+      Let's build something amazing together!
+    </p>
+  </div>
+
+  <script>
+    const projects = [
+      {
+        category: 'roblox',
+        placeId: '6129100500',
+        name: 'Canadian Army RP',
+        role: 'My role: Developer for 1 year.',
+        link: 'https://www.roblox.com/games/6129100500/Canadian-Army-RP',
+        status: 'discontinued'
+      },
+      {
+        category: 'roblox',
+        placeId: '11366072',
+        name: 'Time Variance Authority RP',
+        role: 'My role: Active Scripter',
+        link: 'https://www.roblox.com/games/11366072',
+        status: 'active'
+      },
+      {
+        category: 'roblox',
+        placeId: '76842920359834',
+        name: 'The Company Corporate Roleplay',
+        role: 'My role: Optimization engineer(Formerly)',
+        link: 'https://www.roblox.com/games/76842920359834',
+        status: 'discontinued'
+      },
+      {
+        category: 'roblox',
+        placeId: '75051119676304',
+        name: 'Panda Express RP',
+        role: 'My role: Optimization engineer(Formerly)',
+        link: 'https://www.roblox.com/games/75051119676304/Work-at-Panda-Express',
+        status: 'discontinued'
+      },
+      {
+        category: 'roblox',
+        placeId: '113589985159719',
+        name: 'Zilly Admin Testing',
+        role: 'My role: Co-creator of utility. DM me to try it out! ^_^',
+        link: 'https://www.roblox.com/games/113589985159719/Zilly-Admin-Testing',
+        status: 'active'
+      },
+      {
+        category: 'youtube',
+        videoId: null,
+        name: 'A place youve been before (YT preview)',
+        role: 'My role: Owner and programmer',
+        link: 'https://www.youtube.com/@palm_dog_/shorts',
+        status: 'active'
+      },
+      {
+        category: 'youtube',
+        videoId: 'maHg6Ye1ztE',
+        name: 'Bear lake utah (Single Preview)',
+        role: 'My role: Programmer and co-owner',
+        link: 'https://youtu.be/maHg6Ye1ztE',
+        status: 'active'
+      }
+    ];
+
+    const youtubeGrid = document.getElementById('youtube-grid');
+    const robloxGrid = document.getElementById('roblox-grid');
+    const filterButtons = document.querySelectorAll('.filters button');
+
+    let currentFilter = 'all';
+
+    function statusBadge(status) {
+      const label = status === 'active' ? 'Active' : 'Discontinued';
+      return `<span class="status-badge ${status}">${label}</span>`;
+    }
+
+    function buildYoutubeCard(p) {
+      const card = document.createElement('div');
+      card.className = 'project-card';
+
+      let thumbHTML;
+      if (p.videoId) {
+        thumbHTML = `
+          <div class="thumb-wrap">
+            <img src="https://img.youtube.com/vi/${p.videoId}/hqdefault.jpg" alt="${p.name} thumbnail" loading="lazy" />
+            <div class="play-overlay"><div class="play-btn">▶</div></div>
+          </div>`;
+      } else {
+        thumbHTML = `
+          <div class="thumb-wrap">
+            <div class="thumb-fallback">
+              <span class="icon">▶</span>
+              <span>Visit Channel</span>
+            </div>
+          </div>`;
+      }
+
+      card.innerHTML = `
+        <a class="thumb-link" href="${p.link}" target="_blank" rel="noopener">
+          <span class="platform-badge">YouTube</span>
+          ${thumbHTML}
+        </a>
+        <h3>${p.name}</h3>
+        <p class="role">${p.role}</p>
+        ${statusBadge(p.status)}
+      `;
+      return card;
+    }
+
+    function buildRobloxCard(p) {
+      const card = document.createElement('div');
+      card.className = 'project-card';
+      card.innerHTML = `
+        <a class="thumb-link" href="${p.link}" target="_blank" rel="noopener">
+          <span class="platform-badge">Roblox</span>
+          <div class="thumb-wrap loading" data-place-id="${p.placeId}">
+            <div class="thumb-fallback" style="display:none;">
+              <span class="icon">🎮</span>
+              <span>Preview unavailable</span>
+            </div>
+          </div>
+        </a>
+        <h3>${p.name}</h3>
+        <p class="role">${p.role}</p>
+        ${statusBadge(p.status)}
+      `;
+      return card;
+    }
+
+    function render() {
+      const filtered = projects.filter(p => currentFilter === 'all' || p.status === currentFilter);
+      const yt = filtered.filter(p => p.category === 'youtube');
+      const rb = filtered.filter(p => p.category === 'roblox');
+
+      youtubeGrid.innerHTML = '';
+      robloxGrid.innerHTML = '';
+
+      if (yt.length === 0) {
+        youtubeGrid.innerHTML = '<p class="empty-note">No YouTube showcases in this category yet.</p>';
+      } else {
+        yt.forEach(p => youtubeGrid.appendChild(buildYoutubeCard(p)));
+      }
+
+      if (rb.length === 0) {
+        robloxGrid.innerHTML = '<p class="empty-note">No Roblox games in this category yet.</p>';
+      } else {
+        rb.forEach(p => robloxGrid.appendChild(buildRobloxCard(p)));
+        loadRobloxThumbnails();
+      }
+    }
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-filter');
+        render();
+      });
+    });
+
+    async function fetchJSON(url) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('bad status');
+        return await res.json();
+      } catch (e) {
+        const proxied = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+        const res2 = await fetch(proxied);
+        if (!res2.ok) throw new Error('proxy failed');
+        return await res2.json();
+      }
+    }
+
+    async function getRobloxThumbnailUrl(placeId) {
+      const uniData = await fetchJSON(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`);
+      const universeId = uniData.universeId;
+      if (!universeId) throw new Error('no universeId');
+
+      const thumbData = await fetchJSON(`https://thumbnails.roblox.com/v1/games/multiget-thumbnails?universeIds=${universeId}&size=420x420&format=Png&isCircular=false`);
+      const entry = thumbData && thumbData.data && thumbData.data[0];
+      if (!entry || !entry.imageUrl) throw new Error('no thumbnail');
+      return entry.imageUrl;
+    }
+
+    function loadRobloxThumbnails() {
+      document.querySelectorAll('.thumb-wrap[data-place-id]').forEach(async wrap => {
+        const placeId = wrap.getAttribute('data-place-id');
+        try {
+          const url = await getRobloxThumbnailUrl(placeId);
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = 'Roblox game thumbnail';
+          img.loading = 'lazy';
+          img.onerror = () => showRobloxFallback(wrap);
+          wrap.innerHTML = '';
+          wrap.appendChild(img);
+          wrap.classList.remove('loading');
+        } catch (e) {
+          showRobloxFallback(wrap);
+        }
+      });
+    }
+
+    function showRobloxFallback(wrap) {
+      wrap.classList.remove('loading');
+      wrap.innerHTML = `
+        <div class="thumb-fallback">
+          <span class="icon">🎮</span>
+          <span>Preview unavailable</span>
+        </div>`;
+    }
+
+    render();
+  </script>
+</body>
+</html>
